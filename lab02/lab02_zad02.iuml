@@ -1,0 +1,54 @@
+@startuml lab02_zad02_architektura
+package "System Architecture" {
+
+    node "Client Application" as clientApp {
+        [Web Browser]
+        [Mobile App]
+        [REST Client]
+    }
+
+    node "Load Balancer" as loadBalancer {
+        [Load Balancer]
+    }
+
+    node "API Actions" as apiCluster {
+        [API Read]
+        [API Write]
+    }
+
+    node "Auth & Security" as authServer {
+        [OAuth 2.0 Server]
+        [Token Issuer]
+    }
+
+    package "API Actions" as apiActions {
+        [Write API]
+        [Read API]
+    }
+
+    package "Databases" {
+        node "Primary Database" as primaryDB {
+            [Master DB]
+        }
+        node "Backup Database 1" as replicaDB1 {
+            [Backup DB 1]
+        }
+        node "Cache Layer" as cache {
+            [Redis Cache]
+        }
+    }
+
+    clientApp --> loadBalancer
+    loadBalancer --> apiCluster : Routes Requests
+
+    apiCluster --> authServer : Validate Token
+    apiCluster --> apiActions : Process API Requests
+
+    apiActions --> cache : Check cache
+    apiActions --> primaryDB : Write to DB
+    apiActions --> primaryDB : Read from DB
+    apiActions --> primaryDB : Update in DB
+
+    primaryDB --> replicaDB1 : Data backup
+}
+@enduml

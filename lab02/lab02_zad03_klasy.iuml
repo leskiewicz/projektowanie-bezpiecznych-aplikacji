@@ -1,0 +1,28 @@
+@startuml lab02_zad03_klasy
+class User {
+  + String user_id
+  + String email
+  + String username
+  - String password_hash
+  + String role_id
+  + Timestamp created_at
+  + Timestamp updated_at
+}
+
+class Token {
+  + String token_id
+  + String token_value
+  + Timestamp issued_at
+  + Timestamp expires_at
+  + Boolean is_revoked
+}
+
+class Role {
+  + String role_id
+  + String role_name
+  + String description
+}
+
+User "1" --> "1" Role : "assigned"
+User "1" --> "*" Token : "has"
+@enduml

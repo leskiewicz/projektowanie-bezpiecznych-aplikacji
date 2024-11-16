@@ -1,0 +1,23 @@
+@startuml lab02_zad01_create
+skinparam Style strictuml
+
+actor Client as Client
+participant "OAuth" as OAuth
+participant "Resource Server" as ResourceServer
+
+Client -> OAuth: POST /token
+OAuth -> Client: 200 OK (access_token)
+
+Client -> ResourceServer: POST /users
+ResourceServer -> ResourceServer: Validate access_token
+alt Token valid
+    ResourceServer -> ResourceServer: Validate user_data
+    alt User data valid
+        ResourceServer -> Client: 201 Created (user_id)
+    else User data invalid
+        ResourceServer -> Client: 400 Bad Request (error details)
+    end
+else Token invalid
+    ResourceServer -> Client: 401 Unauthorized
+end
+@enduml

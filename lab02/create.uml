@@ -1,0 +1,34 @@
+@startuml
+
+actor Client
+participant "OAuth Server" as OAuth
+participant "API Server" as API
+participant "Database" as DB
+
+alt Valid client credentials
+    Client -> OAuth: /oauth/token
+    OAuth -> Client: token response (ex. JWT)
+else Invalid client credentials
+    Client -> OAuth: /oauth/token
+    OAuth -> Client: 401 Unauthorized
+end
+
+activate OAuth
+Client -> API: POST /resource
+API -> OAuth: verify token
+alt Valid token
+    OAuth -> API: valid token
+    alt Valid Data
+        API -> DB: save
+        DB -> API: Resource ID
+        API -> Client: 201 Created
+    else Invalid data
+        API -> Client: 400 Bad request
+    end
+else Invalid token
+    OAuth -> API: invalid token
+    API -> Client: 401 Unauthorized
+end
+deactivate OAuth
+
+@enduml

@@ -1,0 +1,31 @@
+@startuml lab02_zad03_encje
+entity "User" {
+  * user_id : String [PK]
+  * email : String [UNIQUE]
+  * username : String [UNIQUE]
+  * password_hash : String
+  * role_id : String [FK]
+  --
+  created_at : Timestamp
+  updated_at : Timestamp
+}
+
+entity "Token" {
+  * token_id : String [PK]
+  * token_value : String [UNIQUE]
+  * issued_at : Timestamp
+  * expires_at : Timestamp
+  --
+  is_revoked : Boolean
+}
+
+entity "Role" {
+  * role_id : String [PK]
+  * role_name : String [UNIQUE]
+  --
+  description : String
+}
+
+User }|--|| Role : "assigned"
+User ||--{ Token : "has"
+@enduml

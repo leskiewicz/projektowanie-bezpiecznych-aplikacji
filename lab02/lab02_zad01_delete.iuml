@@ -1,0 +1,24 @@
+@startuml lab02_zad01_delete
+skinparam Style strictuml
+
+actor Client as Client
+participant "OAuth" as OAuth
+participant "Resource Server" as ResourceServer
+
+Client -> AuthServer: POST /token
+AuthServer -> Client: 200 OK (access_token)
+
+Client -> ResourceServer: DELETE /users/{user_id}
+ResourceServer -> ResourceServer: Validate access_token
+alt Token valid
+    ResourceServer -> ResourceServer: Check if user exists
+    alt User exists
+        ResourceServer -> ResourceServer: Delete user
+        ResourceServer -> Client: 204 No Content
+    else User does not exist
+        ResourceServer -> Client: 404 Not Found
+    end
+else Token invalid
+    ResourceServer -> Client: 401 Unauthorized
+end
+@enduml

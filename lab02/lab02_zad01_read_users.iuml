@@ -1,0 +1,18 @@
+@startuml lab02_zad01_read_users
+skinparam Style strictuml
+
+actor Client as Client
+participant "OAuth" as OAuth
+participant "Resource Server" as ResourceServer
+
+Client -> AuthServer: POST /token
+AuthServer -> Client: 200 OK (access_token)
+
+Client -> ResourceServer: GET /users
+ResourceServer -> ResourceServer: Validate access_token
+alt Token valid
+    ResourceServer -> Client: 200 OK (users_list)
+else Token invalid
+    ResourceServer -> Client: 401 Unauthorized
+end
+@enduml
