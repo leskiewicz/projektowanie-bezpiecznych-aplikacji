@@ -1,0 +1,385 @@
+openapi: 3.0.3
+info:
+  description: REST API specification for CRUD operations on a user model
+  title: Projektowanie bezpiecznych aplikacji - lab 03
+  version: 1.0.11
+servers:
+- url: http://swagger.io
+tags:
+- description: Operations related to users
+  name: user
+paths:
+  /users:
+    get:
+      description: This can only be done by the logged in user.
+      operationId: getAllUsers
+      parameters:
+      - description: Unique identifier for the request.
+        explode: false
+        in: header
+        name: X-Request-ID
+        required: true
+        schema:
+          example: 123e4567-e89b-12d3-a456-426614174000
+          type: string
+        style: simple
+      - description: Request timestamp in ISO 8601 format.
+        explode: false
+        in: header
+        name: X-Date
+        required: true
+        schema:
+          example: 2023-11-19T12:00:00Z
+          format: date-time
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/User'
+                type: array
+          description: Successfully retrieved the list of users.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID'
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+      security:
+      - basicAuth: []
+      summary: Get all users
+      tags:
+      - user
+      x-accepts: application/json
+      x-tags:
+      - tag: user
+  /user:
+    post:
+      description: This can only be done by the logged in user.
+      operationId: createUser
+      parameters:
+      - description: Unique identifier for the request.
+        explode: false
+        in: header
+        name: X-Request-ID
+        required: true
+        schema:
+          example: 123e4567-e89b-12d3-a456-426614174000
+          type: string
+        style: simple
+      - description: Request timestamp in ISO 8601 format.
+        explode: false
+        in: header
+        name: X-Date
+        required: true
+        schema:
+          example: 2023-11-19T12:00:00Z
+          format: date-time
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        description: Details of the user to be created
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: Successfully created the user.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID'
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+      security:
+      - bearerAuth: []
+      summary: Create a new user
+      tags:
+      - user
+      x-content-type: application/json
+      x-accepts: application/json
+      x-tags:
+      - tag: user
+  /user/{username}:
+    delete:
+      description: This can only be done by the logged in user.
+      operationId: deleteUser
+      parameters:
+      - description: The username of the user to delete
+        explode: false
+        in: path
+        name: username
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Unique identifier for the request.
+        explode: false
+        in: header
+        name: X-Request-ID
+        required: true
+        schema:
+          example: 123e4567-e89b-12d3-a456-426614174000
+          type: string
+        style: simple
+      - description: Request timestamp in ISO 8601 format.
+        explode: false
+        in: header
+        name: X-Date
+        required: true
+        schema:
+          example: 2023-11-19T12:00:00Z
+          format: date-time
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: Successfully deleted the user.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID'
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        "400":
+          description: Invalid username supplied
+        "404":
+          description: User not found
+      security:
+      - basicAuth: []
+      summary: Delete a user
+      tags:
+      - user
+      x-accepts: application/json
+      x-tags:
+      - tag: user
+    get:
+      description: Get user details by their username
+      operationId: getUserByName
+      parameters:
+      - description: The username of the user to delete
+        explode: false
+        in: path
+        name: username
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Unique identifier for the request.
+        explode: false
+        in: header
+        name: X-Request-ID
+        required: true
+        schema:
+          example: 123e4567-e89b-12d3-a456-426614174000
+          type: string
+        style: simple
+      - description: Request timestamp in ISO 8601 format.
+        explode: false
+        in: header
+        name: X-Date
+        required: true
+        schema:
+          example: 2023-11-19T12:00:00Z
+          format: date-time
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: Successfully retrieved the user details
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID'
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        "400":
+          description: Invalid username supplied
+        "404":
+          description: User not found
+      security:
+      - bearerAuth: []
+      summary: Get user by user name
+      tags:
+      - user
+      x-accepts: application/json
+      x-tags:
+      - tag: user
+    put:
+      description: This can only be done by the logged in user.
+      operationId: updateUser
+      parameters:
+      - description: The username of the user to delete
+        explode: false
+        in: path
+        name: username
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Unique identifier for the request.
+        explode: false
+        in: header
+        name: X-Request-ID
+        required: true
+        schema:
+          example: 123e4567-e89b-12d3-a456-426614174000
+          type: string
+        style: simple
+      - description: Request timestamp in ISO 8601 format.
+        explode: false
+        in: header
+        name: X-Date
+        required: true
+        schema:
+          example: 2023-11-19T12:00:00Z
+          format: date-time
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+        description: Update an existent user in the store
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: Successfully updated the user.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID'
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        "404":
+          description: User not found
+      security:
+      - basicAuth: []
+      summary: Update a user
+      tags:
+      - user
+      x-content-type: application/json
+      x-accepts: application/json
+      x-tags:
+      - tag: user
+components:
+  headers:
+    X-Request-ID:
+      description: Unique identifier for the request.
+      explode: false
+      required: true
+      schema:
+        example: 123e4567-e89b-12d3-a456-426614174000
+        type: string
+      style: simple
+    X-Date:
+      description: Request timestamp in ISO 8601 format.
+      explode: false
+      required: true
+      schema:
+        example: 2023-11-19T12:00:00Z
+        format: date-time
+        type: string
+      style: simple
+  parameters:
+    username:
+      description: The username of the user to delete
+      explode: false
+      in: path
+      name: username
+      required: true
+      schema:
+        type: string
+      style: simple
+    X-Request-ID:
+      description: Unique identifier for the request.
+      explode: false
+      in: header
+      name: X-Request-ID
+      required: true
+      schema:
+        example: 123e4567-e89b-12d3-a456-426614174000
+        type: string
+      style: simple
+    X-Date:
+      description: Request timestamp in ISO 8601 format.
+      explode: false
+      in: header
+      name: X-Date
+      required: true
+      schema:
+        example: 2023-11-19T12:00:00Z
+        format: date-time
+        type: string
+      style: simple
+  schemas:
+    User:
+      example:
+        firstName: John
+        lastName: James
+        nationality: PL
+        pesel: 99020541663
+        age: 26
+        email: john@email.com
+      properties:
+        firstName:
+          example: John
+          maxLength: 50
+          minLength: 2
+          type: string
+        lastName:
+          example: James
+          maxLength: 50
+          minLength: 2
+          type: string
+        age:
+          example: 26
+          format: int32
+          maximum: 120
+          minimum: 0
+          type: integer
+        pesel:
+          example: 99020541663
+          format: int32
+          pattern: "^[0-9]{11}$"
+          type: integer
+        nationality:
+          $ref: '#/components/schemas/Nationality'
+        email:
+          example: john@email.com
+          format: email
+          type: string
+      required:
+      - age
+      - email
+      - firstName
+      - lastName
+      - nationality
+      - pesel
+      type: object
+    Nationality:
+      enum:
+      - PL
+      - DE
+      - UK
+      example: PL
+      type: string
+  securitySchemes:
+    basicAuth:
+      scheme: basic
+      type: http
+    bearerAuth:
+      scheme: bearer
+      type: http

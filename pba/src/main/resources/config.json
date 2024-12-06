@@ -1,0 +1,7 @@
+{
+  "dateLibrary": "java8",
+  "library": "spring-boot",
+  "packageName": "com.example.usersapi",
+  "modelPackage": "com.example.usersapi.models",
+  "apiPackage": "com.example.usersapi.api"
+}

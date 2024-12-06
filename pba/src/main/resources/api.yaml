@@ -1,0 +1,245 @@
+openapi: 3.0.3
+info:
+  title: Projektowanie bezpiecznych aplikacji - lab 03
+  description: REST API specification for CRUD operations on a user model
+  version: 1.0.11
+servers:
+  - url: http://swagger.io
+tags:
+  - name: user
+    description: Operations related to users
+paths:
+  /users:
+    get:
+      tags:
+        - user
+      summary: Get all users
+      description: This can only be done by the logged in user.
+      operationId: getAllUsers
+      security:
+        - basicAuth: []
+      parameters:
+        - $ref: '#/components/parameters/X-Request-ID'
+        - $ref: '#/components/parameters/X-Date'
+      responses:
+        '200':
+          description: Successfully retrieved the list of users.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID'
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+  /user:
+    post:
+      tags:
+        - user
+      summary: Create a new user
+      description: This can only be done by the logged in user.
+      operationId: createUser
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/X-Request-ID'
+        - $ref: '#/components/parameters/X-Date'
+      requestBody:
+        description: Details of the user to be created
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: Successfully created the user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID'
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+  /user/{username}:
+    get:
+      tags:
+        - user
+      summary: Get user by user name
+      description: Get user details by their username
+      operationId: getUserByName
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/username'
+        - $ref: '#/components/parameters/X-Request-ID'
+        - $ref: '#/components/parameters/X-Date'
+      responses:
+        '200':
+          description: Successfully retrieved the user details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User' 
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID'
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        '400':
+          description: Invalid username supplied
+        '404':
+          description: User not found
+    put:
+      tags:
+        - user
+      summary: Update a user
+      description: This can only be done by the logged in user.
+      operationId: updateUser
+      security:
+        - basicAuth: []
+      parameters:
+        - $ref: '#/components/parameters/username'
+        - $ref: '#/components/parameters/X-Request-ID'
+        - $ref: '#/components/parameters/X-Date'
+      requestBody:
+        description: Update an existent user in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: Successfully updated the user.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID'
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+    delete:
+      tags:
+        - user
+      summary: Delete a user
+      description: This can only be done by the logged in user.
+      operationId: deleteUser
+      security:
+        - basicAuth: []
+      parameters:
+        - $ref: '#/components/parameters/username'
+        - $ref: '#/components/parameters/X-Request-ID'
+        - $ref: '#/components/parameters/X-Date'
+      responses:
+        '204':
+          description: Successfully deleted the user.
+          headers:
+            X-Request-ID:
+              $ref: '#/components/headers/X-Request-ID'
+            X-Date:
+              $ref: '#/components/headers/X-Date'
+        '400':
+          description: Invalid username supplied
+        '404':
+          description: User not found
+components:
+  headers:
+    X-Request-ID:
+      required: true
+      description: Unique identifier for the request.
+      schema:
+        type: string
+        example: "123e4567-e89b-12d3-a456-426614174000"
+    X-Date:
+      required: true
+      description: Request timestamp in ISO 8601 format.
+      schema:
+        type: string
+        format: date-time
+        example: "2023-11-19T12:00:00Z"
+  parameters:
+    username:
+      name: username
+      in: path
+      description: The username of the user to delete
+      required: true
+      schema:
+        type: string
+    X-Request-ID:
+      name: X-Request-ID
+      required: true
+      in: header
+      description: Unique identifier for the request.
+      schema:
+        type: string
+        example: "123e4567-e89b-12d3-a456-426614174000"
+    X-Date:
+      name: X-Date
+      in: header
+      required: true
+      description: Request timestamp in ISO 8601 format.
+      schema:
+        type: string
+        format: date-time
+        example: "2023-11-19T12:00:00Z"
+  schemas:
+    User:
+      type: object
+      properties:
+        firstName:
+          type: string
+          minLength: 2
+          maxLength: 50
+          example: John
+        lastName:
+          type: string
+          minLength: 2
+          maxLength: 50
+          example: James
+        age:
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 120
+          example: 26
+        pesel:
+          type: integer
+          format: int32
+          pattern: '^[0-9]{11}$'
+          example: 99020541663
+        nationality:
+          $ref: '#/components/schemas/Nationality'
+        email:
+          type: string
+          format: email
+          example: john@email.com
+      required:
+        - firstName
+        - lastName
+        - age
+        - pesel
+        - nationality
+        - email
+    Nationality:
+      type: string
+      enum:
+        - PL
+        - DE
+        - UK
+      example: PL
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    bearerAuth:
+      type: http
+      scheme: bearer
