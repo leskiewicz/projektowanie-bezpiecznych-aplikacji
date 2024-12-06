@@ -1,0 +1,79 @@
+//201 Created
+curl --location 'http://localhost:8080/user' \
+--header 'X-Request-ID: 123456' \
+--header 'X-Date: 2024-12-06T22:30:00Z' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "firstName": "John",
+    "lastName": "Doe",
+    "nationality": "PL",
+    "pesel": "99020541663",
+    "age": 26,
+    "email": "john.doe@example.com"
+    }'
+
+//400 Bad Request
+curl --location 'http://localhost:8080/user' \
+--header 'X-Request-ID: 123456' \
+--header 'X-Date: 2024-12-06T22:30:00Z' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "lastName": "Doe",
+    "nationality": "PL",
+    "pesel": "99020541663",
+    "age": 26,
+    "email": "john.doe@example.com"
+    }'
+
+
+
+//200 OK
+curl --location --request PUT 'http://localhost:8080/user/John' \
+--header 'X-Request-ID: 123456' \
+--header 'X-Date: 2024-12-06T22:30:00Z' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+  "firstName": "John",
+  "lastName": "Kowalski",
+  "nationality": "PL",
+  "pesel": "99020541663",
+  "age": 27,
+  "email": "john.smith@example.com"
+}'
+
+//400 Bad Request
+curl --location --request PUT 'http://localhost:8080/user/John' \
+--header 'X-Request-ID: 123456' \
+--header 'X-Date: 2024-12-06T22:30:00Z' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+  "nationality": "PL",
+  "pesel": "99020541663",
+  "age": "dwadzieścia",
+  "email": "john.smith@example.com"
+}'
+
+
+
+//200 OK
+curl --location 'http://localhost:8080/user/John' \
+--header 'X-Request-ID: 123456' \
+--header 'X-Date: 2024-12-06T22:30:00Z'
+
+//404 Not Found
+curl --location 'http://localhost:8080/user/John123' \
+--header 'X-Request-ID: 123456' \
+--header 'X-Date: 2024-12-06T22:30:00Z'
+
+
+
+
+//204 No Content
+curl --location --request DELETE 'http://localhost:8080/user/John' \
+--header 'X-Request-ID: 123456' \
+--header 'X-Date: 2024-12-06T22:30:00Z'
+
+//404 Not Found
+curl --location --request DELETE 'http://localhost:8080/user/Johnn' \
+--header 'X-Request-ID: 123456' \
+--header 'X-Date: 2024-12-06T22:30:00Z'
