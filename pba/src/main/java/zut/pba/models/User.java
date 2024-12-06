@@ -29,7 +29,7 @@ public class User {
 
   private Integer age;
 
-  private Integer pesel;
+  private Long pesel;
 
   private Nationality nationality;
 
@@ -47,7 +47,7 @@ public class User {
   /**
    * Constructor with only required parameters
    */
-  public User(String firstName, String lastName, Integer age, Integer pesel, Nationality nationality, String email) {
+  public User(String firstName, String lastName, Integer age, Long pesel, Nationality nationality, String email) {
     this.firstName = firstName;
     this.lastName = lastName;
     this.age = age;
@@ -118,7 +118,7 @@ public class User {
     this.age = age;
   }
 
-  public User pesel(Integer pesel) {
+  public User pesel(Long pesel) {
     this.pesel = pesel;
     return this;
   }
@@ -130,11 +130,11 @@ public class User {
   @NotNull 
   @Schema(name = "pesel", example = "99020541663", requiredMode = Schema.RequiredMode.REQUIRED)
   @JsonProperty("pesel")
-  public Integer getPesel() {
+  public Long getPesel() {
     return pesel;
   }
 
-  public void setPesel(Integer pesel) {
+  public void setPesel(Long pesel) {
     this.pesel = pesel;
   }
 

@@ -23,6 +23,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import javax.validation.constraints.*;
 import javax.validation.Valid;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -34,6 +35,7 @@ import javax.annotation.Generated;
 public class UserApiController implements UserApi {
 
     private final NativeWebRequest request;
+    private final Map<String, User> userDatabase = new HashMap<>(); // Prosta baza danych w pamięci
 
     @Autowired
     public UserApiController(NativeWebRequest request) {
@@ -45,4 +47,43 @@ public class UserApiController implements UserApi {
         return Optional.ofNullable(request);
     }
 
+    @Override
+    public ResponseEntity<User> createUser(String xRequestID, OffsetDateTime xDate, User user) {
+        if (user == null || user.getFirstName() == null) {
+            return ResponseEntity.badRequest().build(); // 400 Bad Request
+        }
+        userDatabase.put(user.getFirstName(), user);
+        return ResponseEntity.status(201).body(user); // 201 Created
+    }
+
+    @Override
+    public ResponseEntity<Void> deleteUser(String username, String xRequestID, OffsetDateTime xDate) {
+        if (!userDatabase.containsKey(username)) {
+            return ResponseEntity.notFound().build(); // 404 Not Found
+        }
+        userDatabase.remove(username);
+        return ResponseEntity.noContent().build(); // 204 No Content
+    }
+
+    @Override
+    public ResponseEntity<User> getUserByName(String username, String xRequestID, OffsetDateTime xDate) {
+        User user = userDatabase.get(username);
+        if (user == null) {
+            return ResponseEntity.notFound().build(); // 404 Not Found
+        }
+        return ResponseEntity.ok(user); // 200 OK
+    }
+
+    @Override
+    public ResponseEntity<User> updateUser(String username, String xRequestID, OffsetDateTime xDate, User user) {
+        if (!userDatabase.containsKey(username)) {
+            return ResponseEntity.notFound().build(); // 404 Not Found
+        }
+        if (user == null) {
+            return ResponseEntity.badRequest().build(); // 400 Bad Request
+        }
+        user.setFirstName(username); // Upewniamy się, że użytkownik ma poprawne username
+        userDatabase.put(username, user);
+        return ResponseEntity.ok(user); // 200 OK
+    }
 }

@@ -45,4 +45,8 @@ public class UsersApiController implements UsersApi {
         return Optional.ofNullable(request);
     }
 
+    @Override
+    public ResponseEntity<List<User>> getAllUsers(String xRequestID, OffsetDateTime xDate) {
+        return UsersApi.super.getAllUsers(xRequestID, xDate);
+    }
 }
